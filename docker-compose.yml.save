@@ -1,0 +1,18 @@
+services:
+  app:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm install && npm run build && npm start"
+    networks:
+      - traefik_
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextjs2.rule=Host(`asml2.nl`)"
+      - "traefik.http.routers.nextjs2.entrypoints=websecure"
+      - "traefik.http.routers.nextjs2.tls.certresolver=myresolver"
+      - "traefik.http.services.nextjs2.loadbalancer.server.port=3000"
+networks:
+  traefik_proxy:
+    external: true
