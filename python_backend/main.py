@@ -20,9 +20,10 @@ async def upload_csv(
     df = load_data(unprocessed)
 
     # Load all models
-    moisture_model = pickle.load(open('models/moisture_model.pkl', 'rb'))
-    salinity_model = pickle.load(open('models/salinity_model.pkl', 'rb'))
-    water_model = pickle.load(open('models/water_model.pkl', 'rb'))
+    modelpath = './python_backend/models/'
+    moisture_model = pickle.load(open(modelpath + 'moisture_model.pkl', 'rb'))
+    salinity_model = pickle.load(open(modelpath + 'salinity_model.pkl', 'rb'))
+    water_model = pickle.load(open(modelpath + 'water_model.pkl', 'rb'))
 
     # Perform all predictions
     x = df[['temperature (C)', 'Volumetric Water Content (%)', 'Electrical Conductivity (uS/cm)']]
