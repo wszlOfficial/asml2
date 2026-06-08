@@ -24,7 +24,7 @@ class MapGenerator():
 
         # Turn points into voronoi shapes
         all_points = gdf.geometry.union_all()
-        buffer = 0.001
+        buffer = 0.0001
         bbox = box(
             self.min_lon - buffer,
             self.min_lat - buffer,
