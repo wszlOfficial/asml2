@@ -28,6 +28,7 @@ services:
       - "traefik.http.routers.python.rule=Host(`api.asml2.nl`)"
       - "traefik.http.routers.python.entrypoints=websecure"
       - "traefik.http.services.python.loadbalancer.server.port=8000"
+      - "traefik.http.routers.python.tls.certresolver=myresolver"
 networks:
   traefik_proxy:
     external: true
