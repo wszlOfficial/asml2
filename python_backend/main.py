@@ -7,6 +7,18 @@ from python_backend.make_map import MapGenerator, Map
 from python_backend.model_classes import *
 import pickle
 
+class ModelUnpickler(pickle.Unpickler): # Assigns models to the right class
+    def find_class(self, module, name):
+        if module == "__main__":
+            module = "python_backend.model_classes"
+        return super().find_class(module, name)
+
+def load_model(path: Path):
+    with path.open("rb") as f:
+        return ModelUnpickler(f).load()
+
+
+
 app = FastAPI()
 PUBLIC_DIR = Path("/app/public")
 
@@ -19,11 +31,12 @@ async def upload_csv(
 
     df = load_data(unprocessed)
 
+    MODEL_DIR = Path(__file__).resolve().parent / "models"
+
     # Load all models
-    modelpath = './python_backend/models/'
-    moisture_model = pickle.load(open(modelpath + 'moisture_model.pkl', 'rb'))
-    salinity_model = pickle.load(open(modelpath + 'salinity_model.pkl', 'rb'))
-    water_model = pickle.load(open(modelpath + 'water_model.pkl', 'rb'))
+    moisture_model = load_model(MODEL_DIR / "moisture_model.pkl")
+    salinity_model = load_model(MODEL_DIR / "salinity_model.pkl")
+    water_model = load_model(MODEL_DIR / "water_model.pkl")
 
     # Perform all predictions
     x = df[['temperature (C)', 'Volumetric Water Content (%)', 'Electrical Conductivity (uS/cm)']]
