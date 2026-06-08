@@ -5,5 +5,7 @@ pandas
 numpy
 geopandas
 shapely
-folium
+folium>=0.12
 plotnine
+matplotlib
+mapclassify
