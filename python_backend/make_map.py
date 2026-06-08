@@ -25,19 +25,20 @@ class MapGenerator():
         # Turn points into voronoi shapes
         all_points = gdf.geometry.union_all()
         buffer = 0.0001
-        bbox = box(
-            self.min_lon - buffer,
-            self.min_lat - buffer,
-            self.max_lon + buffer,
-            self.max_lat + buffer,
-        )
-        gdf_bbox = gpd.GeoDataFrame(geometry=[bbox], crs='EPSG:4326')   
-        voronoi_polys = voronoi_diagram(all_points, envelope=bbox)
+
+        # Use the field outline as a bounding box
+        boundary = all_points.convex_hull
+        if boundary.geom_type in ("Point", "LineString"):
+            boundary = boundary.buffer(buffer)
+        boundary = boundary.buffer(buffer)
+
+        gdf_boundary = gpd.GeoDataFrame(geometry=[boundary], crs='EPSG:4326')
+        voronoi_polys = voronoi_diagram(all_points, envelope=boundary)
 
         # New dataframe with the voronoi shapes
         gdf_voronoi = gpd.GeoDataFrame(geometry=list(voronoi_polys.geoms), crs='EPSG:4326')
         
-        gdf_voronoi_clipped = gpd.clip(gdf_voronoi, gdf_bbox)  # Clip all shapes outside of the bounding box
+        gdf_voronoi_clipped = gpd.clip(gdf_voronoi, gdf_boundary)  # Clip all shapes outside of the field outline
         self.gdf_fields = gpd.sjoin(gdf_voronoi_clipped, gdf, how="inner", predicate="intersects")
         return self.gdf_fields
     
