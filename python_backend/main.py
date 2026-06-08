@@ -1,10 +1,10 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from pathlib import Path
-from load_downloaded_data import load_data
+from python_backend.load_downloaded_data import load_data
 from io import StringIO
 import pandas as pd
-from make_map import MapGenerator, Map
-from model_classes import *
+from python_backend.make_map import MapGenerator, Map
+from python_backend.model_classes import *
 import pickle
 
 app = FastAPI()
