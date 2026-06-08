@@ -62,4 +62,4 @@ async def upload_csv(
         map_obj = generator.save_map(map.cmap, map.categorical)
         map_obj.save(str(PUBLIC_DIR / map.filename))
 
-    return {"status": "ok", "filenames": [map.filename for map in maps]}
+    return {f"Upload of files {[map.filename for map in maps]} succesfull."}
