@@ -13,6 +13,22 @@ services:
       - "traefik.http.routers.nextjs2.entrypoints=websecure"
       - "traefik.http.routers.nextjs2.tls.certresolver=myresolver"
       - "traefik.http.services.nextjs2.loadbalancer.server.port=3000"
+  python:
+    build:
+      context: .
+      dockerfile: python_backend/Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+    networks:
+      - traefik_proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.python.rule=Host(`api.asml2.nl`)"
+      - "traefik.http.routers.python.entrypoints=websecure"
+      - "traefik.http.services.python.loadbalancer.server.port=8000"
+      - "traefik.http.routers.python.tls.certresolver=myresolver"
 networks:
   traefik_proxy:
     external: true

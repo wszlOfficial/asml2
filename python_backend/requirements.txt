@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pandas
+numpy
+geopandas
+shapely
+folium>=0.12
+plotnine
+matplotlib
+mapclassify
