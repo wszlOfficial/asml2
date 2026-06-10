@@ -1,5 +1,6 @@
 import Image from "next/image";
 import MapBox from "@/components/MapBox";
+import LastUploadHeader from "../components/LastUploadHeader";
 
 export default function Home() {
   return (
@@ -30,10 +31,16 @@ export default function Home() {
           <h1 className="text-xl md:text-3xl font-extrabold tracking-tight text-slate-950">
             Soil measurement dashboard
           </h1>
-          <p className="text-xs md:text-sm text-slate-500 mt-0.5 mb-15">
+          <p className="text-xs md:text-sm text-slate-500 mt-0.5 mb-3">
+            
+            This website shows a visual overview of the soil quality, according to measured data. Hover your mouse over the data points on the map to see the raw measurements. <br /><br />
+
             Note: The current version of this website uses a test dataset with dummy-coordinates. This website is only used as proof-of-concept of a user interface. Take measurement size, coordinates and content with a grain of salt.
           </p>
         </div>
+
+        <LastUploadHeader/>
+
 
         <h1 className="text-l md:text-2xl font-extrabold tracking-tight text-slate-950 mb-4">
           Watering strategy
