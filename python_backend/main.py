@@ -7,7 +7,7 @@ import pandas as pd
 from python_backend.make_map import MapGenerator, Map
 from python_backend.model_classes import *
 import pickle
-from datetime import datetime
+from datetime import datetime, timezone
 
 class ModelUnpickler(pickle.Unpickler): # Assigns models to the right class
     def find_class(self, module, name):
@@ -39,7 +39,7 @@ async def upload_csv(
 ):
     csv_text = (await file.read()).decode("utf-8")
     global last_upload_time
-    last_upload_time = datetime.utcnow()
+    last_upload_time = datetime.now(timezone.utc)
     unprocessed = pd.read_csv(StringIO(csv_text))
 
     df = load_data(unprocessed)

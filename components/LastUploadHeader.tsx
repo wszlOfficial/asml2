@@ -28,7 +28,17 @@ function formatUploadTime(timestamp: string) {
     return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
   }
 
-  return date.toLocaleString();
+  const amsterdamFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Amsterdam",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return `${amsterdamFormatter.format(date)} (Europe/Amsterdam)`;
 }
 
 export default function LastUploadHeader() {

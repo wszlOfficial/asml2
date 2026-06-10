@@ -9,3 +9,4 @@ folium>=0.12
 plotnine
 matplotlib
 mapclassify
+datetime
