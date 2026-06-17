@@ -4,21 +4,29 @@ from plotnine import *
 
 def load_data(df: pd.DataFrame):
     # Check if has all necessary columns
-    columns = ['time', 'temperature (C)', 'Volumetric Water Content (%)',
-               'Electrical Conductivity (uS/cm)', 'latitude', 'longlitude']
-    
-    if not set(columns).issubset(df.columns):
-        return
+    required_columns = [
+        'time',
+        'temperature (C)',
+        'Volumetric Water Content (%)',
+        'Electrical Conductivity (uS/cm)',
+        'latitude',
+        'longlitude'
+    ]
+
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
 
     df['time'] = pd.to_datetime(df['time'], errors='coerce')
 
     df['Volumetric Water Content (%)'] = pd.to_numeric(df['Volumetric Water Content (%)'], errors='coerce')
     df['temperature (C)'] = pd.to_numeric(df['temperature (C)'], errors='coerce')
     df['Electrical Conductivity (uS/cm)'] = pd.to_numeric(df['Electrical Conductivity (uS/cm)'], errors='coerce')
-    df = df.dropna(subset=[\
-    'temperature (C)',\
-    'Volumetric Water Content (%)',\
-    'Electrical Conductivity (uS/cm)']).reset_index(drop=True)
+    df = df.dropna(subset=[
+        'temperature (C)',
+        'Volumetric Water Content (%)',
+        'Electrical Conductivity (uS/cm)'
+    ]).reset_index(drop=True)
 
     # Remove obvious invalid sensor values and extreme outliers
     df = df[
@@ -26,4 +34,8 @@ def load_data(df: pd.DataFrame):
         df['Volumetric Water Content (%)'].between(0, 100) &
         df['Electrical Conductivity (uS/cm)'].between(0, 7000)
     ].reset_index(drop=True)
+
+    if df.empty:
+        raise ValueError("CSV data contains no valid rows after preprocessing")
+
     return df

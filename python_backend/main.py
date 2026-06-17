@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from python_backend.load_downloaded_data import load_data
@@ -18,8 +18,7 @@ class ModelUnpickler(pickle.Unpickler): # Assigns models to the right class
 def load_model(path: Path):
     with path.open("rb") as f:
         return ModelUnpickler(f).load()
-
-
+    
 
 app = FastAPI()
 app.add_middleware(
@@ -38,11 +37,18 @@ async def upload_csv(
     file: UploadFile = File(...)
 ):
     csv_text = (await file.read()).decode("utf-8")
+    try:
+        unprocessed = pd.read_csv(StringIO(csv_text))
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Unable to parse CSV file: {exc}")
+
+    try:
+        df = load_data(unprocessed)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
     global last_upload_time
     last_upload_time = datetime.now(timezone.utc)
-    unprocessed = pd.read_csv(StringIO(csv_text))
-
-    df = load_data(unprocessed)
 
     MODEL_DIR = Path(__file__).resolve().parent / "models"
 
